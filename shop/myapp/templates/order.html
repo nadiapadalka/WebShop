@@ -1,0 +1,47 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row" style="padding-top:50px;">
+      
+    <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+      <h3 class="text-center"><strong>Fill in the order data, please : </strong></h3>
+<form action="{% url 'make_order' %}" method='POST'>
+  {% csrf_token %}
+  <div class="col-sm-4" style="padding-top:50px;">
+    {{ form.name|as_crispy_field }}
+  </div>
+  <div class="col-sm-4">
+    {{ form.last_name|as_crispy_field }}
+  </div>
+  <div class="col-sm-4">
+    {{ form.phone|as_crispy_field }}
+  </div>
+
+{{ form.buying_type|as_crispy_field }}
+{{ form.address|as_crispy_field }}
+{{ form.comments|as_crispy_field }}
+<input type="submit" class="btn btn-success btn-buy" value="Submit your order">
+</form>
+  </div>
+    </div>
+<script src='{% static "js/jquery.js" %}'></script>
+<script>
+  $(document).ready(function(){
+    $('#div_id_address').css('display', 'none')
+    $('#id_buying_type').on('click', function(){
+       buying_type = $(this).val()
+       if(buying_type == 'delivery'){
+         $('#div_id_address').css('display', 'block')
+       } else {
+         $('#div_id_address').css('display', 'none')
+       }
+
+    })
+  })
+</script>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+	<div class="row" style="padding-top:50px;">
+	<div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+<h3 class="text-center"><strong>Order confirmation</strong></h3>
+<br>
+<table class="table">
+<tr>
+	<td class="text-center"><strong>Product</strong></td>
+	<td class="text-center"><strong>Quantity</strong></td>
+	<td class="text-center"><strong>Price</strong></td>
+	<td class="text-center"></td>
+</tr>
+{% for item in cart.items.all %}
+<tr>
+	<td class="text-center"><strong>{{ item.product.title }}</strong></td>
+	<td class="text-center">{{ item.product_count }}</td>
+	<td class="text-center">{{ item.total_item }} UAH</td>
+	<td class="text-center"></td>
+</tr>
+{% endfor %}
+<tr>
+	<td></td>
+	<td class="text-center"><strong>Total sum:</strong></td>
+	<td class="text-center"><strong>{{ cart.total_cart }} UAH</strong></td>
+	<td class="text-center"></td>
+</tr>
+</table>
+<a href="{% url 'create_order' %}" style="padding-left:450px;" ><button class="btn btn-success">Confirm</button></a>
+</div>
+</div>
+</div>
+{% endblock content %}

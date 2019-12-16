@@ -1,0 +1,155 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+<div class="px-4 px-lg-0">
+  <div class="container text-white py-5 text-center">
+    <h1 class="display-4">Shopping cart</h1>
+  </div>
+  <!-- End -->
+
+  <div class="pb-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 p-5 bg-white rounded shadow-sm mb-5">
+        {% if cart.items.count > 0 %}
+          <!-- Shopping cart table -->
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="p-2 px-3 text-uppercase">Product</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="py-2 text-uppercase">Quantity</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="py-2 text-uppercase">Price</div>
+                  </th>
+                  <th scope="col" class="border-0 bg-light">
+                    <div class="py-2 text-uppercase">Remove</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cart_item in cart.items.all %}
+                <tr>
+                  <th scope="row" class="border-0">
+                    <div class="p-2">
+                      <img src="{{ cart_item.product.image.url }}" alt="" width="70" class="img-fluid rounded shadow-sm">
+                      <div class="ml-3 d-inline-block align-middle">
+                        <h5 class="mb-0"> <a href="#" class="text-dark d-inline-block align-middle">{{ cart_item.product.title }}</a></h5>
+                    </div>
+                  </th>
+                  <td class="border-0 align-middle">
+                    <form action="" method="GET">
+				         <input type="number" name="count" class="cart_item_count" data-id="{{ cart_item.id }}" value="{{ cart_item.product_count }}" min="1" style="width: 50px">
+			              </form>
+                  </td>
+                  <td class="border-0 align-middle" id="cart-item-total-{{ cart_item.id }}">{{ cart_item.total_item }} UAH
+                  </td>
+                  <td class="border-0 align-middle"><a href="#" class="remove_item_cart" data_slug="{{ cart_item.product.slug }}"  data-id="{{ cart_item.product.id }}"><button class="btn btn-danger">Delete</button></a></td>
+                </tr>
+                	{% endfor %}
+                  <tr>
+		             <td></td>
+	             	<td class="text-center"><strong>TOTAL:</strong></td>
+		            <td class="text-center" id="cart-total-price"><strong>{{ cart.total_cart }} UAH</strong></td>
+		            <td class="text-center"></td>
+	                </tr>
+              </tbody>
+              <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Coupon code</div>
+            <div class="p-4">
+              <p class="font-italic mb-4">If you have a coupon code, please enter it in the box below</p>
+              <div class="input-group mb-4 border rounded-pill p-2">
+                <input type="text" placeholder="Apply coupon" aria-describedby="button-addon3" class="our_discount">
+                <div class="input-group-append border-0">
+              <button id="button-addon3" type="button" class="btn btn-dark px-4 rounded-pill"><i class="fa fa-gift mr-2"></i>Apply coupon</button>
+
+                </div>
+              </div>
+            </div>
+            </table>
+            <a href="{% url 'checkout_view' %}"  ><button class="btn btn-success">Press to order</button></a>
+          </div>
+          <h2 class="empty_cart"></h2>
+        {% else %}
+       <h2 class="text-center">The cart is empty! It's time to go shopping!</h2>
+        {% endif %}
+        </div>
+      </div>
+      <br>
+<script src='{% static "js/jquery.js" %}'></script>
+<script>
+	$(document).ready(function() {
+		$('.empty_cart').css('display', 'none')
+		$('.remove_item_cart').on('click', function(e){
+			e.preventDefault()
+			product_slug = $(this).attr('data_slug')
+			item_product_id = $(this).attr('data-id')
+			data = {
+				product_slug: product_slug
+			}
+			$.ajax({
+				type: "GET",
+				url: '{% url "remove_item_cart" %}',
+				data:data,
+				success: function(data){
+					$("#cart_count").html(data.total_cart)
+					$('.item-cart-'+item_product_id).css('display', 'none')
+					$('#cart-total-price').html('<strong>' + parseFloat(data.cart_total_price).toFixed(2) + ' UAH</strong>')
+					if(parseInt(data.total_cart) ==0 ){
+						$('.my_cart').css('display', 'none')
+						$('.empty_cart').css('display', 'block')
+						$('.empty_cart').html('<h2 class="text-center">В корзині немає товарів!!!</h2>')
+					}
+
+				}
+			})
+
+		})
+	})
+
+	$(document).ready(function() {
+		$('.cart_item_count').on('click', function(){
+			count = $(this).val()
+			item_id = $(this).attr('data-id')
+			data = {
+				count: count,
+				item_id: item_id
+			}
+			$.ajax({
+				type: "GET",
+				url: '{% url "change_item_count" %}',
+				data:data,
+				success: function(data){
+					$('#cart-item-total-'+item_id).html(parseFloat(data.total_item).toFixed(2) + ' UAH')
+					$('#cart-total-price').html('<strong>' + parseFloat(data.cart_total_price).toFixed(2) + ' UAH</strong>')
+				}
+			})
+		})
+	})
+  $(document).ready(function() {
+    $('.our_discount').on('click', function(){
+      coupon = $(this).val()
+      data = {
+        coupon: coupon,
+      }
+      $.ajax({
+        type: "GET",
+        url: '{% url "make_discount" %}',
+        data:data,
+        success: function(data){
+          $('#cart-total-price').html('<strong>' + parseFloat(data.cart_total_price).toFixed(2) + ' UAH</strong>')
+        }
+      })
+    })
+  })
+</script>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

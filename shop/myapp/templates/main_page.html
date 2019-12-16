@@ -1,0 +1,65 @@
+{% extends 'wrapper.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="categories">
+        <p>
+          {% for cat in categories %}
+          <a class="fontdata" href="{{cat.get_category_slug}}">{{cat.name}}</a>
+          {% endfor %}
+        </p>
+
+    </div>
+
+    <div class="row">
+      {% for prod in products %}
+      <div class="col-lg-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <a href="#"><img class="card-img-top"
+          src="{{ prod.image.url }}" alt="" style='width:100%; height:400px;'>
+          </a>
+          <div class="card-body">
+            <h4 class="card-title">
+            <a href="{{prod.get_product_slug}}">{{prod.title}}</a>
+
+              <!-- <a href="prod.get_absolute_url">{{ prod.title }}</a> -->
+              <!-- <a href="/mainapp/{{ prod.slug }}/">{{ prod.title }}</a> -->
+
+            </h4>
+            <p class="card-text">
+              <b>Price: </b> {{ prod.price }}$
+           <br> {{ prod.description }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    </div>
+    <!-- /.row -->
+
+  <ul class="pagination justify-content-center">
+    <div class="pagination">
+        <span class="step-links">
+            {% if products.has_previous %}
+
+                <a class="fontdata" href="?page=1">&laquo; first</a>
+                <a class="fontdata" href="?page={{ products.previous_page_number }}">previous</a>
+
+            {% endif %}
+
+        <p> <span style="color:#FFFFFF">
+       Page {{ products.number }} of {{ products.paginator.num_pages }}
+            </span> </p>
+
+
+            {% if products.has_next %}
+                <a class="fontdata" href="?page={{ products.next_page_number }}">next</a>
+                <a class="fontdata" href="?page={{ products.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    </ul>
+  </div>
+
+{% endblock %}

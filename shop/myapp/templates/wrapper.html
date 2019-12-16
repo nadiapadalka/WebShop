@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html leng = "en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" cotent="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Ksyshop</title>
+ <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+
+ <!-- <script src='{% static "admin/js/vendor/jquery/jquery.js" %}'></script>
+ <script src='{% static "js/bootstrap.js" %}'></script>
+ <script src='{% static "js/bootstrap.min.js" %}'></script> -->
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+ <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+ <script src="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></script>
+ <!-- <link rel="stylesheet" href="cssformain.css"> -->
+<style>
+.move {
+  padding-left: 15px;
+  padding-right: 30px;
+}
+.btn-secondary
+{
+  color: #FFFFFF;
+  background-color: #692a2a;
+  border-radius: 35px;
+  border: 1px solid #692a2a;
+}
+.footerback {
+  color: #692a2a;
+  background-color: #c6ac80;
+  width:100%;
+}
+.categories{
+  background-color: #c6ac80
+  width:100%;
+  height:85px;
+}
+.fontdata{
+  padding-right: 150px;
+  color: #ffeced;
+  font-family: "Courier New", cursive;
+  font-size: 30px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight:800;
+}
+</style>
+</head>
+
+<body style = "background: #692a2a;" style="{padding:0; margin:0;}">
+
+<!-- upper part -->
+  <div style="width:100%; height:250px;background-color:#ffeced;">
+    <div style =width:55%>
+          <a href="/"><img src="https://i.ibb.co/Mfh6vBT/shop1.png"
+            width="375px" height="200px" align="right"></a>
+
+        </div>
+    </div>
+
+  <div style="width:100%; height:50px; background-color:#c6ac80;">
+    <div class="move">
+      <a class="btn btn-secondary" href="{% url 'login' %}"><span style="color:#FFFFFF;">Sign in</span></a>
+      <a class="btn btn-secondary" href="{% url 'logout' %}"><span style="color:#FFFFFF;">Sign out</span></a>
+      <a class="btn btn-secondary" href="{% url 'registration' %}"><span style="color:#FFFFFF;">Sign up</span></a>
+      {% if request.user.is_authenticated %}
+      <a class="btn btn-secondary" href="{% url 'account' %}"><span style="color:#FFFFFF;">Personal cabinet</span></a>
+      {% endif %}
+      <a href="{% url 'cart' %}"><img src="https://i.ibb.co/YkfsQ8d/shopping-cart.png"
+        width="50px" height="50px" align="right"><span align="right" style=" color:#FFFFFF; padding-left: 1470px;" class="badge" id="cart_count">{% if not request.session.total %} 0 {% else %} {{ request.session.total }} {% endif %}</span></a>
+        <!-- <a href="{% url 'cart' %}">Корзина<span class="badge" id="cart_count">{% if not request.session.total %} 0 {% else %} {{ request.session.total }} {% endif %}</span></a>
+        -->
+    </div>
+
+  </div>
+
+  {% block content %}
+
+  {% endblock content %}
+
+<!-- footer -->
+<footer class="footerback">
+
+  <div class="footer-copyright text-center py-3">© 2019 Copyright: Ksyleki
+    <p><a href="https://www.instagram.com/ksyleki/">Contact me</a></p>
+
+  </div>
+
+</footer>
+<!-- jQuery -->
+  <script src='{% static "js/jquery.js" %}'></script>
+  <script src='{% static "js/bootstrap.js" %}'></script>
+  <script>
+  $(document).ready(function() {
+      $('.add_item_to_cart').on('click', function(e){
+          e.preventDefault()
+          product_slug = $(this).attr('data_slug')
+          data = {
+              product_slug: product_slug
+          }
+          $.ajax({
+              type: "GET",
+              url: '{% url "add_item_cart" %}',
+              data:data,
+              success: function(data){
+                  $("#cart_count").html(data.total_cart)
+              }
+          })
+      })
+  })
+</script>
+</body>
+</html>
