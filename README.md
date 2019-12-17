@@ -1,1 +1,1 @@
-# BookStore
+This is online ecommerce shop written with django. It has registration and login page. Also it has shopping cart and main page with filters. You can add products to shopping cart and then see checkpoint page.
